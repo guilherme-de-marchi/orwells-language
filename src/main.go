@@ -7,26 +7,33 @@ import (
 )
 
 func main() {
-	text := "var a = 17.54 ; var b = as ; var comida = frango ;"
+	text := "var a = $b ;"
+
+	fmt.Println("\n#-#-#-#-# Lexical Analisys #-#-#-#-#\n")
 
 	tokens := compiler.LexicalAnalisys(text)
 	for _, v := range tokens {
 		fmt.Println(*v)
 	}
 
-	fmt.Println("\n###########\n")
+	fmt.Println("\n#-#-#-#-# Getting the instructions #-#-#-#-#\n")
 
 	instructions := compiler.SplitOn(tokens, compiler.INSTRUCTION_DELIMITER_TOKEN)
 	for _, v := range instructions {
-		fmt.Println("-----------")
+		fmt.Println("----- Block -----")
 		for _, w := range v {
 			fmt.Println(*w)
 		}
-		fmt.Println("-----------")
+		fmt.Println("----- END Block -----\n")
 	}
 
-	fmt.Println("\n###########\n")
+	fmt.Println("\n#-#-#-#-# Syntax Analisys #-#-#-#-#\n")
 
-	syntax := compiler.SyntaxAnalisys(instructions)
-	fmt.Println(syntax)
+	err := compiler.SyntaxAnalisys(instructions)
+	if err != nil {
+		fmt.Println(*err)
+		return
+	} else {
+		fmt.Println("OK")
+	}
 }

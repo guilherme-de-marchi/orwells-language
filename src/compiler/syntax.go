@@ -1,36 +1,51 @@
 package compiler
 
-func SyntaxAnalisys(instructions [][]*Token) string {
+func SyntaxAnalisys(instructions [][]*Token) *Error {
 	for _, instruc := range instructions {
 		mainToken := instruc[0].Reference
-		model := syntaxModels[mainToken]
+		models := syntaxModels[mainToken]
 
-		if model == nil {
-			return "syntax invalid"
-		}
+		var completeSyntaxFlag bool
+		var validSyntaxFlag bool
 
-		if len(instruc) != len(model) {
-			return "incomplete syntax"
-		}
+		for _, model := range models {
 
-		for i, tokenArray := range model {
+			if len(instruc) != len(model) {
+				continue
+			} else {
+				completeSyntaxFlag = true
+			}
 
-			var flag bool
-			for _, allowedToken := range tokenArray {
+			validSyntaxFlag = false
 
-				if instruc[i].Reference == allowedToken {
-					flag = true
-					break
+			for i, tokenArray := range model {
+
+				for _, allowedToken := range tokenArray {
+
+					if instruc[i].Reference == allowedToken {
+						validSyntaxFlag = true
+						break
+					} else {
+						validSyntaxFlag = false
+					}
 				}
 			}
 
-			if !flag {
-				return "syntax error"
+			if validSyntaxFlag {
+				break
 			}
+		}
+
+		if !completeSyntaxFlag {
+			return IncompleteSyntaxError
+		}
+
+		if !validSyntaxFlag {
+			return InvalidSyntaxError
 		}
 	}
 
-	return "syntax ok"
+	return nil
 }
 
 func SplitOn(tokens []*Token, target *Token) [][]*Token {
@@ -46,16 +61,36 @@ func SplitOn(tokens []*Token, target *Token) [][]*Token {
 	return slices
 }
 
+type SyntaxModel [][]*Token
+
 var (
-	VAR_MODEL = [][]*Token{
+	VAR_MODEL = SyntaxModel{
 		{VAR_TOKEN},
 		{REFERENCER_TOKEN},
 		{ASSIGNMENT_TOKEN},
-		{STRING_LITERAL_TOKEN, INTEGER_LITERAL_TOKEN, FLOATING_LITERAL_TOKEN},
+		{REFERENCER_TOKEN, STRING_LITERAL_TOKEN, INTEGER_LITERAL_TOKEN, FLOATING_LITERAL_TOKEN},
 		{INSTRUCTION_DELIMITER_TOKEN},
 	}
 
-	syntaxModels = map[*Token][][]*Token{
-		VAR_TOKEN: VAR_MODEL,
+	VAR_MODEL_2 = SyntaxModel{
+		{VAR_TOKEN},
+		{REFERENCER_TOKEN},
+		{ASSIGNMENT_TOKEN},
+		{REFERENCER_TOKEN, STRING_LITERAL_TOKEN, INTEGER_LITERAL_TOKEN, FLOATING_LITERAL_TOKEN},
+		{SUM_TOKEN, SUBTRACTION_TOKEN},
+		{REFERENCER_TOKEN, STRING_LITERAL_TOKEN, INTEGER_LITERAL_TOKEN, FLOATING_LITERAL_TOKEN},
+		{INSTRUCTION_DELIMITER_TOKEN},
+	}
+
+	IF_MODEL = SyntaxModel{
+		{IF_TOKEN},
+		{REFERENCER_TOKEN, STRING_LITERAL_TOKEN, INTEGER_LITERAL_TOKEN, FLOATING_LITERAL_TOKEN},
+		{EQUAL_TOKEN},
+		{REFERENCER_TOKEN, STRING_LITERAL_TOKEN, INTEGER_LITERAL_TOKEN, FLOATING_LITERAL_TOKEN},
+	}
+
+	syntaxModels = map[*Token][]SyntaxModel{
+		VAR_TOKEN: {VAR_MODEL, VAR_MODEL_2},
+		IF_TOKEN:  {IF_MODEL},
 	}
 )

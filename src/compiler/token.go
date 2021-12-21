@@ -17,7 +17,7 @@ func NewToken(reference *Token) *Token {
 }
 
 func GetToken(prevLexeme, lexeme string) *Token {
-	token, ok := reservedTokens[lexeme]
+	token, ok := tokensArray[lexeme]
 	if ok {
 		return NewToken(token)
 	}
@@ -36,9 +36,9 @@ func GetToken(prevLexeme, lexeme string) *Token {
 		return token
 	}
 
-	if prevLexeme == VAR_KEYWORD || prevLexeme == VALUE_SIGN {
+	if prevLexeme == VAR_KEYWORD || lexeme[:1] == VALUE_SIGN {
 		token := NewToken(REFERENCER_TOKEN)
-		token.Value = lexeme
+		token.Value = lexeme[1:]
 		return token
 	}
 
@@ -55,8 +55,6 @@ const (
 	REFERENCER
 
 	// TOKEN PREDETERMINED VALUES
-	RIGHT_SCOPE_DELIMITER = "}"
-	LEFT_SCOPE_DELIMITER  = "{"
 	INSTRUCTION_DELIMITER = ";"
 
 	ASSIGNMENT_SIGN  = "="
@@ -76,8 +74,6 @@ var (
 	VAR_TOKEN  = &Token{Type: VAR_KEYWORD}
 	EXEC_TOKEN = &Token{Type: EXEC_KEYWORD}
 
-	RIGHT_SCOPE_TOKEN           = &Token{Type: RIGHT_SCOPE_DELIMITER}
-	LEFT_SCOPE_TOKEN            = &Token{Type: LEFT_SCOPE_DELIMITER}
 	INSTRUCTION_DELIMITER_TOKEN = &Token{Type: INSTRUCTION_DELIMITER}
 
 	ASSIGNMENT_TOKEN  = &Token{Type: ASSIGNMENT_SIGN}
@@ -93,13 +89,11 @@ var (
 
 	REFERENCER_TOKEN = &Token{Type: REFERENCER}
 
-	reservedTokens = map[string]*Token{
+	tokensArray = map[string]*Token{
 		IF_KEYWORD:   IF_TOKEN,
 		VAR_KEYWORD:  VAR_TOKEN,
 		EXEC_KEYWORD: EXEC_TOKEN,
 
-		RIGHT_SCOPE_DELIMITER: RIGHT_SCOPE_TOKEN,
-		LEFT_SCOPE_DELIMITER:  LEFT_SCOPE_TOKEN,
 		INSTRUCTION_DELIMITER: INSTRUCTION_DELIMITER_TOKEN,
 
 		ASSIGNMENT_SIGN:  ASSIGNMENT_TOKEN,
