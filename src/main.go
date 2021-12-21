@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/Guilherme-De-Marchi/orwells-language/src/compiler"
+	"github.com/Guilherme-De-Marchi/orwells-language/src/interpreter"
 )
 
 func main() {
@@ -11,14 +11,14 @@ func main() {
 
 	fmt.Println("\n#-#-#-#-# Lexical Analisys #-#-#-#-#\n")
 
-	tokens := compiler.LexicalAnalisys(text)
+	tokens := interpreter.LexicalAnalisys(text)
 	for _, v := range tokens {
 		fmt.Println(*v)
 	}
 
 	fmt.Println("\n#-#-#-#-# Getting the instructions #-#-#-#-#\n")
 
-	instructions := compiler.SplitOn(tokens, compiler.INSTRUCTION_DELIMITER_TOKEN)
+	instructions := interpreter.SplitOn(tokens, interpreter.INSTRUCTION_DELIMITER_TOKEN)
 	for _, v := range instructions {
 		fmt.Println("----- Block -----")
 		for _, w := range v {
@@ -29,7 +29,7 @@ func main() {
 
 	fmt.Println("\n#-#-#-#-# Syntax Analisys #-#-#-#-#\n")
 
-	err := compiler.SyntaxAnalisys(instructions)
+	err := interpreter.SyntaxAnalisys(instructions)
 	if err != nil {
 		fmt.Println(*err)
 		return

@@ -1,4 +1,4 @@
-package compiler
+package interpreter
 
 func SyntaxAnalisys(instructions [][]*Token) *Error {
 	for _, instruc := range instructions {
