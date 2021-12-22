@@ -2,16 +2,21 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"strings"
 
 	"github.com/Guilherme-De-Marchi/orwells-language/src/interpreter"
 )
 
 func main() {
-	text := "var a = $b ;"
+	rawText := fileToString("code.orwell")
+	refinedText := strings.Replace(rawText, "\r\n", "", -1)
+
+	fmt.Println(refinedText)
 
 	fmt.Println("\n#-#-#-#-# Lexical Analisys #-#-#-#-#\n")
 
-	tokens := interpreter.LexicalAnalisys(text)
+	tokens := interpreter.LexicalAnalisys(refinedText)
 	for _, v := range tokens {
 		fmt.Println(*v)
 	}
@@ -36,4 +41,13 @@ func main() {
 	} else {
 		fmt.Println("OK")
 	}
+}
+
+func fileToString(path string) string {
+	content, err := ioutil.ReadFile(path)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return string(content)
 }
