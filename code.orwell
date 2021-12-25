@@ -1,27 +1,8 @@
 var a = 1 ;
-var b = 1.10 ;
-var c = hello ;
-var d = $a ;
-var e = $a + $b ;
-var f = $b - $c ;
-var g = $c + 1 ;
-var h = $d + 1.1 ;
-var i = $e - 1 ;
-var j = $f - 1.1 ;
+var b = 2 + 2 ;
 
 exec $Func ( $a hello 1 1.1 ) ;
 exec $Func2 ( ) ;
 
 if $a == hello ;
-
-    if $b == 1 ;
-
-        if $c == 1.1 ;
-
-            var $z = cool ;
-
-        endif ;
-
-    endif ;
-
 endif ;
